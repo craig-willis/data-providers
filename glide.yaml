@@ -1,0 +1,9 @@
+package: github.com/nds-org/clowder-data-provider
+import:
+- package: github.com/ant0ine/go-json-rest
+  version: ^3.3.2
+  subpackages:
+  - rest
+- package: github.com/golang/glog
+  subpackages:
+  - pkg/middleware
