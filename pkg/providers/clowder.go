@@ -47,7 +47,6 @@ func (s *ClowderProvider) getDatasetMetadata(dataset *api.Dataset) (*ClowderData
 			glog.Error(err)
 			return nil, err
 		}
-		fmt.Println(string(body))
 
 		dataset := ClowderDataset{}
 		err = json.Unmarshal([]byte(body), &dataset)
@@ -85,6 +84,7 @@ func (s *ClowderProvider) SymlinkDataset(dataset *api.Dataset) error {
 		return err
 	}
 
+	// TODO: Clowder datasets can have the same name -- append the ID?
 	datasetPath := dataset.LocalPath + "/" + ds.Name
 	if _, err := os.Stat(datasetPath); os.IsNotExist(err) {
 		os.MkdirAll(datasetPath, 0777)
@@ -95,10 +95,9 @@ func (s *ClowderProvider) SymlinkDataset(dataset *api.Dataset) error {
 
 		filePath := dataset.LocalPath + "/" + ds.Name + "/" + file.Filename
 
-		err = os.Symlink(file.Filepath, filePath)
-		if err != nil {
-			glog.Error(err)
-			return err
+		// TODO: Files in the dataset can have the same name -- append the ID (as in the ZIP download)?
+		if _, err := os.Stat(filePath); os.IsNotExist(err) {
+			os.Symlink(file.Filepath, filePath)
 		}
 	}
 
